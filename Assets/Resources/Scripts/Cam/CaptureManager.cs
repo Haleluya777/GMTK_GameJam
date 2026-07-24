@@ -11,7 +11,7 @@ public class CaptureManager : MonoBehaviour
     [SerializeField] private Image image;
     private int resolution = 1024;
     private float time;
-    private Sprite captured;
+    //private Sprite captured;
     private float size;
     private bool isCaptured;
     private GameObject playerObj;
@@ -31,17 +31,18 @@ public class CaptureManager : MonoBehaviour
         time += Time.deltaTime;
         if (time >= 1.5f && !isCaptured)
         {
-            captured = Capture();
-            LocalGameManager.instance.stageManager.StageResultDirection(CheckCapture());
+            //captured = Capture();
+            //LocalGameManager.instance.stageManager.StageResultDirection(CheckCapture());
             isCaptured = true;
             time = 0;
         }
 
     }
 
-    private bool CheckCapture()
+    private List<GameObject> CheckCapture()
     {
         Bounds bounds = GetBounds();
+        List<GameObject> results = new List<GameObject>();
         Bounds playerBounds = playerObj.GetComponent<Renderer>().bounds;
 
         float intersectMinX = Mathf.Max(bounds.min.x, playerBounds.min.x);
@@ -55,12 +56,7 @@ public class CaptureManager : MonoBehaviour
 
         float playerArea = playerBounds.size.x * playerBounds.size.y;
 
-        if (playerArea <= 0 || intersectArea / playerArea < .1f)
-        {
-            return false;
-        }
-
-        return true;
+        return results;
     }
 
     Bounds GetBounds()
@@ -96,45 +92,45 @@ public class CaptureManager : MonoBehaviour
         }
     }
 
-    private Sprite Capture()
-    {
-        Bounds bounds = GetBounds();
+    // private Sprite Capture()
+    // {
+    //     Bounds bounds = GetBounds();
 
-        float halfHeight = cam.orthographicSize;
-        float halfWidth = halfHeight * cam.aspect;
-        Vector3 camPos = cam.transform.position;
+    //     float halfHeight = cam.orthographicSize;
+    //     float halfWidth = halfHeight * cam.aspect;
+    //     Vector3 camPos = cam.transform.position;
 
-        int rtWidth = resolution;
-        int rtHeight = (int)(resolution / cam.aspect);
+    //     int rtWidth = resolution;
+    //     int rtHeight = (int)(resolution / cam.aspect);
 
-        float worldToPixelX = rtWidth / (2f * halfWidth);
-        float worldToPixelY = rtHeight / (2f * halfHeight);
+    //     float worldToPixelX = rtWidth / (2f * halfWidth);
+    //     float worldToPixelY = rtHeight / (2f * halfHeight);
 
-        int px = (int)((bounds.min.x - (camPos.x - halfWidth)) * worldToPixelX);
-        int py = (int)((bounds.min.y - (camPos.y - halfHeight)) * worldToPixelY);
-        int pw = (int)(bounds.size.x * worldToPixelX);
-        int ph = (int)(bounds.size.y * worldToPixelY);
+    //     int px = (int)((bounds.min.x - (camPos.x - halfWidth)) * worldToPixelX);
+    //     int py = (int)((bounds.min.y - (camPos.y - halfHeight)) * worldToPixelY);
+    //     int pw = (int)(bounds.size.x * worldToPixelX);
+    //     int ph = (int)(bounds.size.y * worldToPixelY);
 
-        px = Mathf.Clamp(px, 0, rtWidth - 1);
-        py = Mathf.Clamp(py, 0, rtHeight - 1);
-        pw = Mathf.Clamp(pw, 1, rtWidth - px);
-        ph = Mathf.Clamp(ph, 1, rtHeight - py);
+    //     px = Mathf.Clamp(px, 0, rtWidth - 1);
+    //     py = Mathf.Clamp(py, 0, rtHeight - 1);
+    //     pw = Mathf.Clamp(pw, 1, rtWidth - px);
+    //     ph = Mathf.Clamp(ph, 1, rtHeight - py);
 
-        RenderTexture rt = new RenderTexture(rtWidth, rtHeight, 24);
-        cam.targetTexture = rt;
-        cam.Render();
+    //     RenderTexture rt = new RenderTexture(rtWidth, rtHeight, 24);
+    //     cam.targetTexture = rt;
+    //     cam.Render();
 
-        Texture2D tex = new Texture2D(pw, ph, TextureFormat.RGBA32, false);
-        RenderTexture.active = rt;
-        tex.ReadPixels(new Rect(px, py, pw, ph), 0, 0);
-        tex.Apply();
+    //     Texture2D tex = new Texture2D(pw, ph, TextureFormat.RGBA32, false);
+    //     RenderTexture.active = rt;
+    //     tex.ReadPixels(new Rect(px, py, pw, ph), 0, 0);
+    //     tex.Apply();
 
-        Sprite sprite = Sprite.Create(tex, new Rect(0, 0, pw, ph), new Vector2(0.5f, 0.5f));
+    //     Sprite sprite = Sprite.Create(tex, new Rect(0, 0, pw, ph), new Vector2(0.5f, 0.5f));
 
-        cam.targetTexture = null;
-        RenderTexture.active = null;
-        Destroy(rt);
+    //     cam.targetTexture = null;
+    //     RenderTexture.active = null;
+    //     Destroy(rt);
 
-        return sprite;
-    }
+    //     return sprite;
+    // }
 }

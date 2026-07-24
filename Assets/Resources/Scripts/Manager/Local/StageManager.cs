@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using System.Collections.Generic;
-using System;
+using System.Collections;
 
 public class StageManager : MonoBehaviour
 {
@@ -23,16 +23,9 @@ public class StageManager : MonoBehaviour
         seq.AppendInterval(0.3f);
         seq.AppendCallback(() =>
         {
-            if (result) //쉘터 내부 진입 성공
+            foreach (var child in enemyList)
             {
-                foreach (var child in enemyList)
-                {
-                    child.SetActive(false);
-                }
-            }
-            else //진입 실패. 게임 오버.
-            {
-
+                child.SetActive(false);
             }
         });
         seq.Append(fadePanel.DOFade(0f, 0.3f));
@@ -40,7 +33,7 @@ public class StageManager : MonoBehaviour
         if (!result) //게임 오버.
         {
             seq.AppendInterval(.25f);
-
+            seq.AppendCallback(() => LocalGameManager.instance.canvasManager.GameOver());
         }
     }
 }
