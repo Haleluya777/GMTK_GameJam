@@ -23,6 +23,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "UnderJump",
+                    "type": "Button",
+                    "id": "73c8da37-9455-4ebe-80a5-a52dc13a818f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -69,6 +78,17 @@
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "8ae4aa8f-1eea-4130-aaaa-731cd03c79dd",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";PC",
+                    "action": "UnderJump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

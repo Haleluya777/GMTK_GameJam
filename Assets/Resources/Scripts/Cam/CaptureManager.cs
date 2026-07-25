@@ -1,60 +1,68 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class CaptureManager : MonoBehaviour
 {
-    [SerializeField] private GameObject capturePanel;
-    [SerializeField] private Camera cam;
     [SerializeField] private List<Transform> corners;
-    [SerializeField] private Image image;
+    //[SerializeField] private Image image;
     private int resolution = 1024;
     private float time;
+    public float timer;
     //private Sprite captured;
     private float size;
-    private bool isCaptured;
+    public bool isCaptured;
     private GameObject playerObj;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        cam = Camera.main;
         size = 1200f;
-        image.rectTransform.sizeDelta = new Vector2(size, size * .5f);
+        //image.rectTransform.sizeDelta = new Vector2(size, size * .5f);
         playerObj = LocalGameManager.instance.playerObj;
     }
 
     // Update is called once per frame
     void Update()
     {
-        time += Time.deltaTime;
-        if (time >= 1.5f && !isCaptured)
+        if (!isCaptured) time += Time.deltaTime;
+        if (time >= timer && !isCaptured)
         {
             //captured = Capture();
-            //LocalGameManager.instance.stageManager.StageResultDirection(CheckCapture());
+            LocalGameManager.instance.stageManager.StageResultDirection();
             isCaptured = true;
             time = 0;
         }
-
     }
 
-    private List<GameObject> CheckCapture()
+    public List<GameObject> CheckCapture()
     {
         Bounds bounds = GetBounds();
         List<GameObject> results = new List<GameObject>();
-        Bounds playerBounds = playerObj.GetComponent<Renderer>().bounds;
+        List<GameObject> units = LocalGameManager.instance.stageManager.unitList;
 
-        float intersectMinX = Mathf.Max(bounds.min.x, playerBounds.min.x);
-        float intersectMaxX = Mathf.Min(bounds.max.x, playerBounds.max.x);
-        float intersectMinY = Mathf.Max(bounds.min.y, playerBounds.min.y);
-        float intersectMaxY = Mathf.Min(bounds.max.y, playerBounds.max.y);
+        foreach (var unit in units)
+        {
+            Bounds unitBounds = unit.GetComponent<Renderer>().bounds;
 
-        float intersectWidth = Mathf.Max(0, intersectMaxX - intersectMinX);
-        float intersectHeight = Mathf.Max(0, intersectMaxY - intersectMinY);
-        float intersectArea = intersectWidth * intersectHeight;
+            float intersectMinX = Mathf.Max(bounds.min.x, unitBounds.min.x);
+            float intersectMaxX = Mathf.Min(bounds.max.x, unitBounds.max.x);
+            float intersectMinY = Mathf.Max(bounds.min.y, unitBounds.min.y);
+            float intersectMaxY = Mathf.Min(bounds.max.y, unitBounds.max.y);
 
-        float playerArea = playerBounds.size.x * playerBounds.size.y;
+            float intersectWidth = Mathf.Max(0, intersectMaxX - intersectMinX);
+            float intersectHeight = Mathf.Max(0, intersectMaxY - intersectMinY);
+
+            float intersectArea = intersectWidth * intersectHeight;
+            float unitArea = unitBounds.size.x * unitBounds.size.y;
+
+            if (unitArea > 0 && intersectArea / unitArea >= .7f)
+            {
+                results.Add(unit);
+            }
+        }
 
         return results;
     }
@@ -75,6 +83,12 @@ public class CaptureManager : MonoBehaviour
         return bounds;
     }
 
+    public void SetValue(bool boolValue, float floatValue)
+    {
+        isCaptured = boolValue;
+        timer = floatValue;
+    }
+
     void OnDrawGizmos()
     {
         if (corners == null || corners.Count < 4) return;
@@ -88,7 +102,7 @@ public class CaptureManager : MonoBehaviour
             if (corners[i] == null) continue;
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(corners[i].position, 0.1f);
-            Debug.Log($"Corner[{i}]: pos={corners[i].position}");
+            //Debug.Log($"Corner[{i}]: pos={corners[i].position}");
         }
     }
 

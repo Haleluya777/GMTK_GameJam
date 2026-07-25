@@ -1,18 +1,31 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using Gilzoide.LottiePlayer;
 
-public class CanvasManager : MonoBehaviour
+public class CanvasManager : MonoBehaviour, IDataInitializable
 {
+    [SerializeField] ImageLottiePlayer animPlayer;
+    [SerializeField] private GameObject fadePanel;
     [SerializeField] private GameObject resultPanel;
     [SerializeField] private TextMeshProUGUI tmp;
     private const string GAME_OVER_TXT = "Game Over";
 
-    public void GameOver()
+    public void DataInitialize()
     {
+
+    }
+
+    public void GameOverUI()
+    {
+        Debug.Log("게임오버.");
         resultPanel.SetActive(true);
         StartCoroutine(TypingText());
+    }
+
+    public void LaserDirection()
+    {
+        //animPlayer.Play();
     }
 
     private IEnumerator TypingText()
@@ -21,8 +34,7 @@ public class CanvasManager : MonoBehaviour
         foreach (var c in GAME_OVER_TXT)
         {
             tmp.text += c;
+            yield return new WaitForSeconds(.05f);
         }
-
-        yield return new WaitForSeconds(.2f);
     }
 }

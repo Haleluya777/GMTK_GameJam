@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class LocalGameManager : MonoBehaviour
 {
@@ -6,6 +7,7 @@ public class LocalGameManager : MonoBehaviour
 
     public StageManager stageManager;
     public CanvasManager canvasManager;
+    public CaptureManager captureManager;
     public GameObject playerObj;
 
     void Awake()
@@ -14,5 +16,25 @@ public class LocalGameManager : MonoBehaviour
         {
             instance = this;
         }
+
+        foreach (var child in GetComponentsInChildren<IDataInitializable>())
+        {
+            child.DataInitialize();
+        }
+    }
+
+    public void GameOver()
+    {
+        canvasManager.GameOverUI();
+    }
+
+    public void DisableInput()
+    {
+        InputSystem.DisableDevice(Keyboard.current);
+    }
+
+    public void EnableInput()
+    {
+        InputSystem.EnableDevice(Keyboard.current);
     }
 }
