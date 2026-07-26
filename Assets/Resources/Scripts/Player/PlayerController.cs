@@ -8,7 +8,7 @@ public class PlayerController : Units
     [SerializeField] private Animator anim;
     [SerializeField] private Transform rayPos;
 
-    private const float MOVE_SPEED = 5f;
+    private float MOVE_SPEED = 5f;
     private const float JUMP_POWER = 7f;
 
     private Rigidbody2D.SlideResults slideResults;
@@ -21,15 +21,24 @@ public class PlayerController : Units
     public bool isGround;
     private float windForce;
 
+    private CapsuleCollider2D capsule;
+    private ContactFilter2D enemyFilter;
+    private readonly Collider2D[] overlapResults = new Collider2D[8];
+
     private void Start()
     {
         if (rigid == null) rigid = GetComponent<Rigidbody2D>();
+        capsule = GetComponent<CapsuleCollider2D>();
         slideMovement = new Rigidbody2D.SlideMovement();
         slideMovement.surfaceAnchor = Vector2.zero;
         slideMovement.surfaceSlideAngle = 90f;
         slideMovement.gravitySlipAngle = 90f;
         slideMovement.useLayerMask = true;
         slideMovement.layerMask = 1 << 6;
+
+        enemyFilter = new ContactFilter2D();
+        enemyFilter.SetLayerMask(LayerMask.GetMask("Enemy"));
+        enemyFilter.useTriggers = true;
     }
 
     public override void Dead()
@@ -112,9 +121,31 @@ public class PlayerController : Units
             rigidVelocity -= 15 * Time.fixedDeltaTime;
         }
 
+        bool nearEnemy = CheckNearbyEnemy();
+        float speed = nearEnemy ? MOVE_SPEED * 0.25f : MOVE_SPEED;
+
         slideMovement.gravity = new Vector2(0f, rigidVelocity);
-        slideResults = rigid.Slide((Vector2.right * horizontalInput * MOVE_SPEED) + (Vector2.right * windForce), Time.deltaTime, slideMovement);
+        slideResults = rigid.Slide((Vector2.right * horizontalInput * speed) + (Vector2.right * windForce), Time.deltaTime, slideMovement);
         this.gameObject.transform.localScale = new Vector2(horizontalInput < 0 ? 1 : -1, 1);
         isGround = slideResults.surfaceHit.collider != null;
+    }
+
+    private bool CheckNearbyEnemy()
+    {
+        int count = Physics2D.OverlapCapsule(
+            (Vector2)transform.position + capsule.offset,
+            capsule.size,
+            capsule.direction,
+            0f,
+            enemyFilter,
+            overlapResults
+        );
+
+        for (int i = 0; i < count; i++)
+        {
+            if (overlapResults[i].GetComponent<EnemyController>() != null)
+                return true;
+        }
+        return false;
     }
 }

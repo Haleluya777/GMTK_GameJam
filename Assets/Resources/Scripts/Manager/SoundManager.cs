@@ -20,4 +20,9 @@ public class SoundManager : MonoBehaviour
     {
         windAudioSource.Play();
     }
+
+    public void PauseWindSound()
+    {
+        windAudioSource.Pause();
+    }
 }

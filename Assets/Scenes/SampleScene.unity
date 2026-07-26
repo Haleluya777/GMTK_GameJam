@@ -149,8 +149,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CanvasManager
   resultPanel: {fileID: 1398360719}
-  captureResult: {fileID: 1972946549}
   tmp: {fileID: 1042186482}
+  timerPanel: {fileID: 0}
 --- !u!4 &16129130
 Transform:
   m_ObjectHideFlags: 0
@@ -274,14 +274,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ba1ff19faef8c64282df11f07c72f9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CaptureManager
-  capturePanel: {fileID: 1398360719}
-  cam: {fileID: 519420031}
   corners:
   - {fileID: 1737081826}
   - {fileID: 1304077903}
   - {fileID: 1412338551}
   - {fileID: 1740008110}
-  image: {fileID: 1972946549}
+  countDownAudio: []
+  timer: 0
+  timerSpeed: 0
+  isCaptured: 0
 --- !u!4 &452333055
 Transform:
   m_ObjectHideFlags: 0
@@ -637,6 +638,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LocalGameManager
   stageManager: {fileID: 1606440132}
   canvasManager: {fileID: 16129129}
+  captureManager: {fileID: 0}
+  objectPoolManager: {fileID: 0}
+  eventBus: {fileID: 0}
   playerObj: {fileID: 986967941}
 --- !u!4 &841582402
 Transform:
@@ -777,7 +781,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db573e8fa1890c14db4cd62cba05a53a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  isDead: 0
   rigid: {fileID: 986967942}
+  anim: {fileID: 0}
+  rayPos: {fileID: 0}
+  jumpRequest: 0
+  isGround: 0
 --- !u!212 &986967945
 SpriteRenderer:
   serializedVersion: 2
@@ -1226,7 +1235,7 @@ SpriteRenderer:
   m_Size: {x: 0.09, y: 0.09}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1322416580
 GameObject:
@@ -1485,7 +1494,7 @@ SpriteRenderer:
   m_Size: {x: 0.09, y: 0.09}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1606440131
 GameObject:
@@ -1518,7 +1527,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
   enemyList:
   - {fileID: 1322416580}
-  fadePanel: {fileID: 1398360721}
+  unitList: []
+  stageData: {fileID: 0}
+  fadePanel: {fileID: 0}
+  enemyPrefab: {fileID: 0}
+  safeZone: {fileID: 0}
+  monsterSpawnPoint: []
+  safeZonePoint: []
 --- !u!4 &1606440133
 Transform:
   m_ObjectHideFlags: 0
@@ -1623,7 +1638,7 @@ SpriteRenderer:
   m_Size: {x: 0.09, y: 0.09}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1740008109
 GameObject:
@@ -1714,7 +1729,7 @@ SpriteRenderer:
   m_Size: {x: 0.09, y: 0.09}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1753186660
 GameObject:

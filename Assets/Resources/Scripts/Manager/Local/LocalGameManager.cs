@@ -24,6 +24,7 @@ public class LocalGameManager : MonoBehaviour
         {
             child.DataInitialize();
         }
+        EnableInput();
     }
 
     public void GameOver()

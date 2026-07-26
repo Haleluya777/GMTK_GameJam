@@ -27,7 +27,9 @@ public class MainMenuCanvas : MonoBehaviour
 
         while (!asyncOp.isDone)
         {
-            if (asyncOp.progress >= 1.5f)
+            Debug.Log($"로딩 진행률: {asyncOp.progress * 100f:F1}%");
+
+            if (asyncOp.progress >= 0.9f)
             {
                 asyncOp.allowSceneActivation = true;
             }

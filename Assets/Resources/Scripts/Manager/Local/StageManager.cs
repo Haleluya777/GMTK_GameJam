@@ -31,17 +31,24 @@ public class StageManager : MonoBehaviour, IDataInitializable
 
     public void AddMonster(int count)
     {
-        List<Transform> positions = monsterSpawnPoint;
-        for (int i = 0; i < count; i++)
+        List<int> indices = new List<int>();
+        for (int i = 0; i < monsterSpawnPoint.Count; i++)
+            indices.Add(i);
+
+        for (int i = indices.Count - 1; i > 0; i--)
         {
-            Debug.Log("소!환!");
-            var enemy = LocalGameManager.instance.objectPoolManager.GetGo("Enemy"); //Instantiate(enemyPrefab);
+            int j = Random.Range(0, i + 1);
+            (indices[i], indices[j]) = (indices[j], indices[i]);
+        }
+
+        for (int i = 0; i < count && i < indices.Count; i++)
+        {
+            var enemy = LocalGameManager.instance.objectPoolManager.GetGo("Enemy");
+            var ec = enemy.GetComponent<EnemyController>();
+            ec.isDead = false;
+            ec.TeleportTo(monsterSpawnPoint[indices[i]].position);
             enemyList.Add(enemy);
-
-            Transform _position = positions[Random.Range(0, positions.Count)];
-            positions.Remove(_position);
-
-            enemy.transform.position = _position.position;
+            unitList.Add(enemy);
         }
     }
 
@@ -92,18 +99,18 @@ public class StageManager : MonoBehaviour, IDataInitializable
             {
                 resultList.Clear();
 
-                /*게임 클리어 조건
+                //게임 클리어 조건
                 if (unitList.Count == 1 && unitList.Contains(LocalGameManager.instance.playerObj))
                 {
                     Debug.Log("게임 클리어!");
+                    LocalGameManager.instance.canvasManager.GameClearUI();
                     return;
-                }*/
+                }
 
-                if (turn % 2 == 0) AddMonster(REFILL_MONSTER_COUNT);
+                AddMonster(REFILL_MONSTER_COUNT);
                 turn++;
 
                 ProccessNextStage();
-                Debug.Log($"남아 있는 적의 수 : {enemyList.Count}");
             }
         });
     }

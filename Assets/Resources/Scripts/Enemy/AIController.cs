@@ -8,6 +8,12 @@ public class AIController : MonoBehaviour
     public GameObject ParentObj;
     public BehaviorTreeGraph behaviorTree;
     public Animator anim;
+    public EnemyController enemyController;
+
+    void OnEnable()
+    {
+        curState = UnitState.Idle;
+    }
 
     void LateUpdate()
     {

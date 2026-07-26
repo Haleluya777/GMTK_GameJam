@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1321220391883887027}
   - component: {fileID: 3738341331970196932}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: AIController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,6 +48,7 @@ MonoBehaviour:
   ParentObj: {fileID: 5324295826522556982}
   behaviorTree: {fileID: 11400000, guid: d3874dd392c97c7429f2f792fd5f292a, type: 2}
   anim: {fileID: 8277333825162461960}
+  enemyController: {fileID: 0}
 --- !u!1 &5324295826522556982
 GameObject:
   m_ObjectHideFlags: 0
@@ -62,7 +63,7 @@ GameObject:
   - component: {fileID: 7076864329884697853}
   - component: {fileID: 2099797483498421033}
   - component: {fileID: 8277333825162461960}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Monster
   m_TagString: Enemy
   m_Icon: {fileID: 0}
