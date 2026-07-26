@@ -1,11 +1,13 @@
 using UnityEngine;
 using DG.Tweening;
+using Unity.VisualScripting;
 
 public class EnemyController : Units
 {
     [Header("References")]
     public Rigidbody2D rigid;
     public Animator anim;
+    public AIController aiController;
 
     [Header("Movement")]
     public float moveSpeed = 3f;
@@ -39,6 +41,8 @@ public class EnemyController : Units
     public override void Dead()
     {
         Debug.Log("뒤짐");
+        isDead = true;
+        aiController.curState = AIController.UnitState.Dead;
         anim.CrossFade("Dead", 0f);
         DOVirtual.DelayedCall(1.5f, () => this.gameObject.SetActive(false));
     }

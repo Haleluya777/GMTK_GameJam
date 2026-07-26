@@ -1,7 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 
-public abstract class Units : MonoBehaviour
+public abstract class Units : PoolAble
 {
     public bool isDead = false;
 

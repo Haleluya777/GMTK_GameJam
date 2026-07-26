@@ -4,7 +4,7 @@ public class GlobalGameManager : MonoBehaviour
 {
     public static GlobalGameManager instance;
 
-    public EventBus eventBus;
+    public SoundManager soundManager;
 
     void Awake()
     {

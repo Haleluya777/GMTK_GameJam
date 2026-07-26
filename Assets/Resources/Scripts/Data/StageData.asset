@@ -14,5 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageData
   gimmicks:
   - timerDuration: 10
+    gimmickType: 0
+    gimmickValue: 1
+  - timerDuration: 10
+    gimmickType: 5
+    gimmickValue: 2
+  - timerDuration: 10
+    gimmickType: 1
+    gimmickValue: 1
+  - timerDuration: 10
     gimmickType: 2
-    gimmickValue: 0.001
+    gimmickValue: 0.002
+  - timerDuration: 10
+    gimmickType: 3
+    gimmickValue: 0.7
+  - timerDuration: 10
+    gimmickType: 4
+    gimmickValue: 0.5
+  - timerDuration: 10
+    gimmickType: 6
+    gimmickValue: 0.5

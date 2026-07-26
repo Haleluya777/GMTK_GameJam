@@ -8,6 +8,9 @@ public class LocalGameManager : MonoBehaviour
     public StageManager stageManager;
     public CanvasManager canvasManager;
     public CaptureManager captureManager;
+    public ObjectPoolManager objectPoolManager;
+    public EventBus eventBus;
+
     public GameObject playerObj;
 
     void Awake()

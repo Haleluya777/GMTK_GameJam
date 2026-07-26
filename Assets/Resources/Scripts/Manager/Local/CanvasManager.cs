@@ -5,10 +5,11 @@ using Gilzoide.LottiePlayer;
 
 public class CanvasManager : MonoBehaviour, IDataInitializable
 {
-    [SerializeField] ImageLottiePlayer animPlayer;
-    [SerializeField] private GameObject fadePanel;
     [SerializeField] private GameObject resultPanel;
     [SerializeField] private TextMeshProUGUI tmp;
+
+    public GameObject timerPanel;
+
     private const string GAME_OVER_TXT = "Game Over";
 
     public void DataInitialize()

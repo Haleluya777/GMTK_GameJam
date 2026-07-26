@@ -9,7 +9,7 @@ public class PlayerController : Units
     [SerializeField] private Transform rayPos;
 
     private const float MOVE_SPEED = 5f;
-    private const float JUMP_POWER = 10f;
+    private const float JUMP_POWER = 7f;
 
     private Rigidbody2D.SlideResults slideResults;
     private Rigidbody2D.SlideMovement slideMovement;
@@ -19,6 +19,7 @@ public class PlayerController : Units
     private float rigidVelocity = 0;
     public bool jumpRequest;
     public bool isGround;
+    private float windForce;
 
     private void Start()
     {
@@ -33,7 +34,9 @@ public class PlayerController : Units
 
     public override void Dead()
     {
+        isDead = true;
         anim.CrossFade("Dead", 0f);
+        LocalGameManager.instance.DisableInput();
         DOVirtual.DelayedCall(1.5f, () => this.gameObject.SetActive(false));
     }
 
@@ -61,19 +64,23 @@ public class PlayerController : Units
             var hitCollider = slideResults.surfaceHit.collider;
             if (hitCollider != null)
             {
-                Debug.Log("뭔냄새야.");
                 var platform = hitCollider.GetComponent<PlatForm>();
                 if (platform != null && platform.canThrough)
                 {
-                    Debug.Log("뭔냄새야222.");
                     platform.Through();
                 }
             }
         }
     }
 
+    public void WindGimmick(float value)
+    {
+        windForce = value;
+    }
+
     private void LateUpdate()
     {
+        if (isDead) return;
         if (isGround)
         {
             if (horizontalInput == 0f)
@@ -106,7 +113,8 @@ public class PlayerController : Units
         }
 
         slideMovement.gravity = new Vector2(0f, rigidVelocity);
-        slideResults = rigid.Slide(Vector2.right * horizontalInput * MOVE_SPEED, Time.deltaTime, slideMovement);
+        slideResults = rigid.Slide((Vector2.right * horizontalInput * MOVE_SPEED) + (Vector2.right * windForce), Time.deltaTime, slideMovement);
+        this.gameObject.transform.localScale = new Vector2(horizontalInput < 0 ? 1 : -1, 1);
         isGround = slideResults.surfaceHit.collider != null;
     }
 }

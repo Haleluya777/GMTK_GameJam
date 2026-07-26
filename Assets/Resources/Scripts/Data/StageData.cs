@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum GimmickType { None, StrongWind, LightOff, SmallSafeZone, MovingSafeZone, }
+public enum GimmickType { None, StrongWind, LightOff, SmallSafeZone, MovingSafeZone, FastCount, NoCountImage }
 
 [System.Serializable]
 public class Gimmick

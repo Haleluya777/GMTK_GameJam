@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -7,14 +8,18 @@ using UnityEngine.UI;
 public class CaptureManager : MonoBehaviour
 {
     [SerializeField] private List<Transform> corners;
-    //[SerializeField] private Image image;
+    public List<AudioClip> countDownAudio;
+
     private int resolution = 1024;
     private float time;
     public float timer;
+    public float timerSpeed;
     //private Sprite captured;
     private float size;
+    private int lastSec = 0;
     public bool isCaptured;
     private GameObject playerObj;
+    private GlobalGameManager globalGameManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -22,19 +27,57 @@ public class CaptureManager : MonoBehaviour
         size = 1200f;
         //image.rectTransform.sizeDelta = new Vector2(size, size * .5f);
         playerObj = LocalGameManager.instance.playerObj;
+        globalGameManager = GlobalGameManager.instance;
+        countDownAudio = globalGameManager.soundManager.countDownSound;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!isCaptured) time += Time.deltaTime;
+        if (!isCaptured) time += Time.deltaTime * timerSpeed;
+
+        int currnetSec = Mathf.FloorToInt(time);
+        if (currnetSec != lastSec)
+        {
+            lastSec = currnetSec;
+
+            int remaining = Mathf.CeilToInt(timer - time);
+            if (remaining >= 1 && remaining <= 5)
+            {
+                globalGameManager.soundManager.PlaySound(countDownAudio[remaining - 1]);
+            }
+            else if (remaining <= 0)
+            {
+                globalGameManager.soundManager.PlaySound(globalGameManager.soundManager.laserSound);
+            }
+        }
+
         if (time >= timer && !isCaptured)
         {
             //captured = Capture();
             LocalGameManager.instance.stageManager.StageResultDirection();
             isCaptured = true;
             time = 0;
+            timerSpeed = 1f;
         }
+    }
+
+    public void SetCoutDownSound(GimmickType gimmickType)
+    {
+        Debug.Log("사운드 초기화.");
+        if (gimmickType == GimmickType.FastCount)
+        {
+            countDownAudio = globalGameManager.soundManager.countDownSoundError;
+        }
+        else
+        {
+            countDownAudio = globalGameManager.soundManager.countDownSound;
+        }
+    }
+
+    public void SetTimerSpeed(float value)
+    {
+        timerSpeed = value;
     }
 
     public List<GameObject> CheckCapture()
@@ -58,7 +101,7 @@ public class CaptureManager : MonoBehaviour
             float intersectArea = intersectWidth * intersectHeight;
             float unitArea = unitBounds.size.x * unitBounds.size.y;
 
-            if (unitArea > 0 && intersectArea / unitArea >= .7f)
+            if (unitArea > 0 && intersectArea / unitArea >= .45f)
             {
                 results.Add(unit);
             }
@@ -104,6 +147,11 @@ public class CaptureManager : MonoBehaviour
             Gizmos.DrawSphere(corners[i].position, 0.1f);
             //Debug.Log($"Corner[{i}]: pos={corners[i].position}");
         }
+    }
+
+    public void ResetLocalScale()
+    {
+        gameObject.transform.localScale = new Vector2(1, 1);
     }
 
     // private Sprite Capture()
